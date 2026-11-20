@@ -13,7 +13,9 @@ type AttendanceResponse = { success:boolean; count:number; data:AttendanceEntry[
 type SubmitResponse = { success:boolean; message:string; data:AttendanceEntry };
 
 function todayIST() {
-  return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+  const parts = new Intl.DateTimeFormat("en-GB", { timeZone:"Asia/Kolkata", year:"numeric", month:"2-digit", day:"2-digit" }).formatToParts(new Date());
+  const part = (type:string) => parts.find(item => item.type === type)?.value ?? "";
+  return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
 export default function AttendanceScreen() {
@@ -87,8 +89,18 @@ export default function AttendanceScreen() {
           <><View style={styles.success}><Text style={styles.successTitle}>Attendance already submitted</Text><Text style={styles.successText}>This class has an attendance record for today. Teachers cannot submit a duplicate.</Text></View>
             {students.map(student=><View key={student._id} style={styles.studentRow}><View style={{flex:1}}><Text style={styles.studentName}>{student.name}</Text><Text style={styles.studentMeta}>{student.studentId||"Student"}</Text></View><Text style={[styles.pill,{color:submittedMap.get(student._id)==="present"?"#15803D":"#B91C1C"}]}>{submittedMap.get(student._id)==="present"?"Present":submittedMap.get(student._id)==="absent"?"Absent":"—"}</Text></View>)}
           </>:
-          <><Text style={styles.notice}>Phase 2 submission uses a safe default of Present for every student. Please verify attendance with your class before submitting. Individual present/absent editing will be added after the first device test.</Text>
-            <Pressable disabled={!canSubmit} onPress={()=>Alert.alert("Confirm attendance",`Submit all ${students.length} students as Present for ${date}?`,[{text:"Cancel",style:"cancel"},{text:"Submit",onPress:()=>mutation.mutate()}])} style={[styles.submitButton,!canSubmit&&styles.disabled]}>
+          <><Text style={styles.notice}>Select Present or Absent for each student. Students default to Present; review every row before submitting.</Text>
+            {students.map(student=>{
+              const selected = statuses[student._id] || "present";
+              return <View key={student._id} style={styles.studentRow}>
+                <View style={{flex:1}}><Text style={styles.studentName}>{student.name}</Text><Text style={styles.studentMeta}>{student.studentId || "Student"}</Text></View>
+                <View style={styles.choiceGroup}>
+                  <Pressable onPress={()=>setStatuses(current=>({...current,[student._id]:"present"}))} style={[styles.choice,selected==="present"&&styles.presentSelected]}><Text style={[styles.choiceText,selected==="present"&&styles.selectedText]}>Present</Text></Pressable>
+                  <Pressable onPress={()=>setStatuses(current=>({...current,[student._id]:"absent"}))} style={[styles.choice,selected==="absent"&&styles.absentSelected]}><Text style={[styles.choiceText,selected==="absent"&&styles.selectedText]}>Absent</Text></Pressable>
+                </View>
+              </View>;
+            })}
+            <Pressable disabled={!canSubmit} onPress={()=>Alert.alert("Confirm attendance",`Submit attendance for all ${students.length} students on ${date}?`,[{text:"Cancel",style:"cancel"},{text:"Submit",onPress:()=>mutation.mutate()}])} style={[styles.submitButton,!canSubmit&&styles.disabled]}>
               {mutation.isPending?<ActivityIndicator color="#FFFFFF"/>:<Text style={styles.submitText}>Submit all as Present</Text>}
             </Pressable>
             {!window?.allowed?<Text style={styles.hint}>Submission is disabled because the backend attendance window is closed.</Text>:null}
