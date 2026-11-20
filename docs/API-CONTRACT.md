@@ -46,3 +46,13 @@ Teacher submissions are restricted server-side to the teacher's assigned class. 
 - The classes listing endpoint is not used as a teacher-facing source because its response is not scoped in the controller.
 - The app must not rely on client-side filtering for authorization.
 - QR scan endpoints are not yet wired into the app; verify the QR session token lifecycle before adding camera support.
+
+
+## Mobile attendance screen behavior
+
+- Loads `GET /students?page=1&limit=100`; the backend scopes the teacher to the assigned class.
+- Loads `GET /attendance/window-status` and refreshes it every 60 seconds.
+- Checks `GET /attendance/students?date=YYYY-MM-DD`; teacher results are restricted to their assigned class.
+- Allows per-student `present` / `absent` selection.
+- Submits the exact body shown above to `POST /attendance/students`.
+- If today's record already exists, the screen shows the saved statuses and disables another submission.
