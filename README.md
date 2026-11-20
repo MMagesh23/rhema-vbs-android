@@ -17,10 +17,10 @@ A teacher-only Android companion app for the existing VBS Management backend. Th
 - Secure token persistence and refresh-token rotation
 - Teacher dashboard
 - Assigned-class student directory (backend enforces teacher class scope)
-- Attendance-window status screen
+- Attendance window status and per-student Present/Absent submission
 - Initial EAS Android build profiles
 
-Attendance submission UI is intentionally not enabled until all live request contracts and the active VBS-year/class selection behavior are verified.
+Attendance submission is integrated using the backend's verified request shape. Live account/device testing remains required before production use.
 
 ## Setup
 
@@ -35,6 +35,10 @@ npx expo start
 ```
 
 Set `EXPO_PUBLIC_API_BASE_URL` in `.env` if the API host changes. Never put credentials, JWT secrets, or private API keys in Expo public environment variables.
+
+## Attendance
+
+The attendance screen loads the teacher-scoped student list, checks the IST attendance window, checks whether a record already exists for today, and lets the teacher mark each student Present or Absent before submitting. The backend validates the assigned class, VBS schedule, time window, and duplicate submission. The app defaults each student to Present, so teachers must review every row before confirmation.
 
 ## Android build
 
