@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "RHEMA VBS",
+    "slug": "rhema-vbs",
+    "scheme": "rhemavbs",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "plugins": [
+      "expo-router",
+      ["expo-secure-store", { "configureAndroidBackup": true }]
+    ],
+    "android": {
+      "package": "in.rhema.vbs",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#0F172A"
+      }
+    },
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
