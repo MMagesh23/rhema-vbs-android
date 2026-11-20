@@ -2,7 +2,7 @@ import { Link, Redirect } from "expo-router";
 import { ScrollView, StyleSheet, Text, View, Pressable } from "react-native";
 import { useAuth } from "@/features/auth/AuthProvider";
 
-function ActionCard({title,description,href}:{title:string;description:string;href:"/(teacher)/students"|" /(teacher)/attendance"}) {
+function ActionCard({title,description,href}:{title:string;description:string;href:"/(teacher)/students" | "/(teacher)/attendance"}) {
   return <Link href={href} asChild><Pressable style={styles.action}><Text style={styles.actionTitle}>{title}</Text><Text style={styles.actionDescription}>{description}</Text><Text style={styles.arrow}>Open →</Text></Pressable></Link>;
 }
 export default function TeacherDashboard() {
