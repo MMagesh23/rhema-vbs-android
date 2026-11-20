@@ -9,12 +9,14 @@
 - [x] Teacher dashboard and profile.
 - [x] Assigned-class student directory.
 - [x] Attendance window status screen.
+- [x] Per-student Present/Absent selection and attendance submission API integration.
+- [x] Existing-record check to prevent duplicate submission from the app.
 - [x] Backend API contract notes.
 - [ ] Install dependencies and run Expo Doctor.
 - [ ] Run TypeScript check in a local environment.
 - [ ] Verify login/session with a dedicated teacher account.
 - [ ] Confirm live API response shape and class/year details.
 - [ ] Build and install Android preview APK.
-- [ ] Implement attendance submission form after live verification.
+- [ ] Verify attendance submission with a dedicated teacher account and an active VBS attendance window.
 
 This checklist distinguishes source committed to GitHub from commands and live-device checks that have not yet been run.
