@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { apiRequest } from "@/services/api";
 
 type Student = { _id:string; name:string; studentId?:string; classAssigned?:{_id:string;name:string;category?:string} };
@@ -19,6 +19,7 @@ function todayIST() {
 export default function AttendanceScreen() {
   const queryClient=useQueryClient();
   const date=todayIST();
+  const [statuses,setStatuses]=useState<Record<string,"present"|"absent">>({});
   const studentsQuery=useQuery({
     queryKey:["teacher-students","attendance"],
     queryFn:()=>apiRequest<StudentsResponse>("/students?page=1&limit=100")
@@ -50,7 +51,7 @@ export default function AttendanceScreen() {
       body:{
         date,
         classId:classInfo?._id,
-        records:students.map(student=>({studentId:student._id,status:"present" as const}))
+        records:students.map(student=>({studentId:student._id,status:statuses[student._id] || "present"}))
       }
     }),
     onSuccess:async response=>{
@@ -104,7 +105,7 @@ const styles=StyleSheet.create({
  label:{fontSize:10,fontWeight:"800",letterSpacing:1.2,color:"#94A3B8"},status:{fontSize:18,fontWeight:"800",marginTop:12},message:{fontSize:12,color:"#64748B",lineHeight:19,marginTop:6},
  card:{backgroundColor:"#FFFFFF",padding:18,borderRadius:16,marginTop:14,borderWidth:1,borderColor:"#E5EAF1"},
  className:{fontSize:17,fontWeight:"800",color:"#0F172A"},studentRow:{flexDirection:"row",alignItems:"center",paddingVertical:12,borderBottomWidth:1,borderBottomColor:"#F1F5F9"},
- studentName:{fontSize:13,fontWeight:"700",color:"#0F172A"},studentMeta:{fontSize:10,color:"#94A3B8",marginTop:3},pill:{fontSize:11,fontWeight:"800"},
+ studentName:{fontSize:13,fontWeight:"700",color:"#0F172A"},choiceGroup:{flexDirection:"row",gap:6},choice:{paddingHorizontal:9,paddingVertical:7,borderRadius:8,borderWidth:1,borderColor:"#E2E8F0"},presentSelected:{backgroundColor:"#DCFCE7",borderColor:"#86EFAC"},absentSelected:{backgroundColor:"#FEE2E2",borderColor:"#FCA5A5"},choiceText:{fontSize:10,fontWeight:"700",color:"#64748B"},selectedText:{color:"#0F172A"},studentMeta:{fontSize:10,color:"#94A3B8",marginTop:3},pill:{fontSize:11,fontWeight:"800"},
  notice:{fontSize:12,color:"#92400E",backgroundColor:"#FEF3C7",padding:12,borderRadius:10,lineHeight:18,marginTop:18},
  success:{backgroundColor:"#ECFDF5",padding:13,borderRadius:10,marginTop:16,marginBottom:8},successTitle:{fontSize:13,fontWeight:"800",color:"#166534"},successText:{fontSize:11,color:"#166534",lineHeight:17,marginTop:4},
  submitButton:{height:50,backgroundColor:"#2563EB",borderRadius:12,alignItems:"center",justifyContent:"center",marginTop:18},submitText:{color:"#FFFFFF",fontWeight:"800",fontSize:14},disabled:{opacity:.4},
